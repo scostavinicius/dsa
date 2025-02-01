@@ -1,24 +1,21 @@
 #ifndef FILA_HPP
 #define FILA_HPP
 
-#include "Node.hpp"
 #include <iostream>
 #include <stdexcept>
 
-template<typename Type>
-class Fila
-{
-private:
+#include "Node.hpp"
+
+template <typename Type>
+class Fila {
+ private:
   Node<Type>* inicio;
   Node<Type>* fim;
   size_t tamanho;
 
-public:
+ public:
   // Construtores (o construtor cópia é implementado mais abaixo)
-  Fila()
-    : inicio(nullptr)
-    , fim(nullptr)
-    , tamanho(0) {};
+  Fila() : inicio(nullptr), fim(nullptr), tamanho(0) {};
   Fila(const Fila<Type>& outraFila);
   // Destrutor (implementado mais abaixo)
   ~Fila();

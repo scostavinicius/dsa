@@ -1,23 +1,20 @@
 #ifndef LISTA_HPP
 #define LISTA_HPP
 
-#include "Node.hpp"
 #include <iostream>
 
-template<typename Type>
-class Lista
-{
-private:
+#include "Node.hpp"
+
+template <typename Type>
+class Lista {
+ private:
   Node<Type>* primeiro;
   Node<Type>* ultimo;
   size_t tamanho;
 
-public:
+ public:
   // Construtores (o construtor cópia é implementado mais abaixo)
-  Lista()
-    : primeiro(nullptr)
-    , ultimo(nullptr)
-    , tamanho(0) {};
+  Lista() : primeiro(nullptr), ultimo(nullptr), tamanho(0) {};
   Lista(const Lista<Type>& outraLista);
   // Destrutor (implementado mais abaixo)
   ~Lista();
@@ -33,10 +30,8 @@ public:
   void print();
 };
 
-template<typename Type>
-Lista<Type>::Lista(const Lista<Type>& outraLista)
-  : Lista()
-{
+template <typename Type>
+Lista<Type>::Lista(const Lista<Type>& outraLista) : Lista() {
   Node<Type>* temp = outraLista.primeiro;
 
   while (temp != nullptr) {
@@ -45,9 +40,8 @@ Lista<Type>::Lista(const Lista<Type>& outraLista)
   }
 }
 
-template<typename Type>
-Lista<Type>::~Lista()
-{
+template <typename Type>
+Lista<Type>::~Lista() {
   Node<Type>* temp = lista.getPrimeiro();
   Node<Type>* temp2 = lista.getPrimeiro();
 
@@ -62,10 +56,8 @@ Lista<Type>::~Lista()
   lista.setTamanho(0);
 }
 
-template<typename Type>
-void
-Lista<Type>::pop_front()
-{
+template <typename Type>
+void Lista<Type>::pop_front() {
   if (lista.getTamanho() == 0) {
     std::cout << "Lista vazia" << std::endl;
     return;
@@ -78,10 +70,8 @@ Lista<Type>::pop_front()
   lista.setTamanho(lista.getTamanho() - 1);
 }
 
-template<typename Type>
-void
-Lista<Type>::pop_back()
-{
+template <typename Type>
+void Lista<Type>::pop_back() {
   if (lista.getTamanho() == 0) {
     std::cout << "Lista vazia" << std::endl;
     return;
@@ -100,10 +90,8 @@ Lista<Type>::pop_back()
   lista.setUltimo(temp2);
 }
 
-template<typename Type>
-void
-Lista<Type>::push_front(Type dado)
-{
+template <typename Type>
+void Lista<Type>::push_front(Type dado) {
   Node<Type>* temp = new Node<Type>(dado);
 
   if (lista.getTamanho() == 0) {
@@ -119,10 +107,8 @@ Lista<Type>::push_front(Type dado)
   lista.setTamanho(lista.getTamanho() + 1);
 }
 
-template<typename Type>
-void
-Lista<Type>::push_back(Type dado)
-{
+template <typename Type>
+void Lista<Type>::push_back(Type dado) {
   Node<Type>* temp = new Node<Type>(dado);
 
   if (lista.getTamanho() == 0) {
@@ -136,10 +122,8 @@ Lista<Type>::push_back(Type dado)
   lista.setTamanho(lista.getTamanho() + 1);
 }
 
-template<typename Type>
-void
-Lista<Type>::insert(int posicao, Type dado)
-{
+template <typename Type>
+void Lista<Type>::insert(int posicao, Type dado) {
   if (posicao < 0 || posicao > lista.getTamanho()) {
     std::cout << "Posicao invalida" << std::endl;
   }
@@ -166,10 +150,8 @@ Lista<Type>::insert(int posicao, Type dado)
   lista.setTamanho(lista.getTamanho() + 1);
 }
 
-template<typename Type>
-void
-Lista<Type>::remove(int posicao)
-{
+template <typename Type>
+void Lista<Type>::remove(int posicao) {
   if (posicao < 0 || posicao >= lista.getTamanho()) {
     std::cout << "Posicao invalida" << std::endl;
     return;
@@ -202,17 +184,13 @@ Lista<Type>::remove(int posicao)
   lista.setTamanho(lista.getTamanho() - 1);
 }
 
-template<typename Type>
-void
-Lista<Type>::clear()
-{
+template <typename Type>
+void Lista<Type>::clear() {
   ~Lista();
 }
 
-template<typename Type>
-void
-Lista<Type>::reverse()
-{
+template <typename Type>
+void Lista<Type>::reverse() {
   Node<Type>* anterior = nullptr;
   Node<Type>* atual = lista.getPrimeiro();
   Node<Type>* proximo = nullptr;
@@ -227,10 +205,8 @@ Lista<Type>::reverse()
   lista.setPrimeiro(anterior);
 }
 
-template<typename Type>
-void
-Lista<Type>::print()
-{
+template <typename Type>
+void Lista<Type>::print() {
   Node<Type>* temp = lista.getPrimeiro();
 
   while (temp != nullptr) {
