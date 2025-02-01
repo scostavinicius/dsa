@@ -20,15 +20,51 @@ class Fila {
   // Destrutor (implementado mais abaixo)
   ~Fila();
 
-  // Operações da Fila
+  /**
+   * @brief Adiciona um novo elemento na fila
+   *
+   * @param dado Novo dado que será adicionado na fila
+   */
   void push(Type dado);
+
+  /**
+   * @brief Remove o primeiro elemento da fila
+   *
+   */
   void pop();
-  void front();
-  void back();
+
+  /**
+   * @brief Retorna o primeiro elemento da fila
+   *
+   * @return Type
+   */
+  Type front();
+
+  /**
+   * @brief Retorna se a fila está ou não vazia
+   *
+   * @return true se a fila estiver vazia
+   * @return false se a fila não estiver vazia
+   */
   bool isEmpty();
+
+  /**
+   * @brief Retorna o tamanho da fila
+   *
+   * @return size_t
+   */
   size_t size();
+
+  /**
+   * @brief Limpa (reseta) completamente a fila
+   *
+   */
   void clear();
-  void reverse();
+
+  /**
+   * @brief Imprime todos elementos da fila
+   *
+   */
   void print();
 };
 
