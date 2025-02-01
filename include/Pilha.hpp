@@ -19,14 +19,53 @@ class Pilha {
   // Destrutor (implementado mais abaixo)
   ~Pilha();
 
-  // Operações da Pilha
+  /**
+   * @brief Remove o último elemento da pilha
+   *
+   */
   void pop();
+
+  /**
+   * @brief Adiciona um elemento no final da pilha
+   *
+   * @param dado
+   */
   void push(Type dado);
+
+  /**
+   * @brief Retorna o último elemento da pilha
+   *
+   * O último elemento da pilha é o próximo a ser removido
+   *
+   * @return Type
+   */
   Type top();
+
+  /**
+   * @brief Retorna o tamanho da pilha
+   *
+   * @return size_t
+   */
   size_t size();
+
+  /**
+   * @brief Retorna se a pilha está ou não vazia
+   *
+   * @return true se a pilha estiver vazia
+   * @return false se a pilha não estiver vazia
+   */
   bool isEmpty();
+
+  /**
+   * @brief Limpa (reseta) completamente a pilha
+   *
+   */
   void clear();
-  void reverse();
+
+  /**
+   * @brief Imprime todos elementos da pilha
+   *
+   */
   void print();
 };
 
@@ -92,22 +131,6 @@ void Pilha<Type>::clear() {
   while (!isEmpty()) {
     pop();
   }
-}
-
-template <typename Type>
-void Pilha<Type>::reverse() {
-  Node<Type>* anterior = nullptr;
-  Node<Type>* atual = topo;
-  Node<Type>* proximo = nullptr;
-
-  while (atual) {
-    proximo = atual->getProximo();
-    atual->setProximo(anterior);
-    anterior = atual;
-    atual = proximo;
-  }
-
-  topo = anterior;
 }
 
 template <typename Type>
