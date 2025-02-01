@@ -22,12 +22,14 @@ class Lista {
   /**
    * @brief Remove o primeiro elemento da lista
    *
+   * @throw `std::out_of_range` se a lista estiver vazia
    */
   void pop_front();
 
   /**
    * @brief Remove o último elemento da lista
    *
+   * @throw `std::out_of_range` se a lista estiver vazia
    */
   void pop_back();
 
@@ -50,6 +52,8 @@ class Lista {
    *
    * @param posicao Índice da lista onde será adicionado um novo elemento
    * @param dado Novo dado que será adicionado na lista
+   *
+   * @throw `std::out_of_range` se a posição for maior que o tamanho da lista
    */
   void insert(size_t posicao, Type dado);
 
@@ -57,6 +61,9 @@ class Lista {
    * @brief Remove um elemento em uma dada posição da lista
    *
    * @param posicao Índice da lista que será removido
+   *
+   * @throw `std::out_of_range` se a posição for maior ou igual ao tamanho da
+   * lista
    */
   void remove(size_t posicao);
 
@@ -179,8 +186,7 @@ void Lista<Type>::push_back(Type dado) {
 template <typename Type>
 void Lista<Type>::insert(size_t posicao, Type dado) {
   if (posicao < 0 || posicao > tamanho) {
-    throw std::out_of_range(
-        "Posicao invalida (menor que 0 ou maior que o tamanho da lista)");
+    throw std::out_of_range("Posicao invalida (maior que o tamanho da lista)");
   }
 
   // Se a posição for 0, apenas faz o push_front

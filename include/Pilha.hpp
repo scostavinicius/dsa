@@ -22,6 +22,7 @@ class Pilha {
   /**
    * @brief Remove o último elemento da pilha
    *
+   * @throw `std::out_of_range` se a pilha estiver vazia
    */
   void pop();
 
@@ -38,6 +39,8 @@ class Pilha {
    * O último elemento da pilha é o próximo a ser removido
    *
    * @return Type
+   *
+   * @throw `std::out_of_range` se a pilha estiver vazia
    */
   Type top();
 
@@ -71,11 +74,26 @@ class Pilha {
 
 template <typename Type>
 Pilha<Type>::Pilha(const Pilha<Type>& outraPilha) : Pilha() {
+  // Quando a outraPilha é desempilhada, ela fica na ordem inversa. Então temos
+  // que criar uma pilha auxiliar para armazenar a pilha na ordem inversa e
+  // depois desempilhar a auxiliar para a cópia
+
   Node<Type>* temp = outraPilha.topo;
 
-  while (temp != nullptr) {
-    push(temp->getDado());
-    temp = temp->getProximo();
+  if (temp != nullptr) {
+    Pilha<Type> pilhaAux;
+
+    // Armazenar os elementos na pilha auxiliar
+    while (temp != nullptr) {
+      pilhaAux.push(temp->getDado());
+      temp = temp->getProximo();
+    }
+
+    // Transferir os dados da pilha auxiliar para a nova pilha
+    while (!pilhaAux.isEmpty()) {
+      push(pilhaAux.topo);
+      pilhaAux.pop();
+    }
   }
 }
 
@@ -92,14 +110,13 @@ bool Pilha<Type>::isEmpty() {
 template <typename Type>
 void Pilha<Type>::pop() {
   if (isEmpty()) {
-    std::cerr << "Erro: Pilha vazia" << std::endl;
-    return;
+    throw std::out_of_range("A pilha está vazia");
   }
 
   Node<Type>* temp = topo;
   topo = topo->getProximo();
   delete temp;
-  tamanho--;
+  --tamanho;
 }
 
 template <typename Type>
@@ -107,13 +124,13 @@ void Pilha<Type>::push(Type dado) {
   Node<Type>* temp = new Node<Type>(dado);
   temp->setProximo(topo);
   topo = temp;
-  tamanho++;
+  ++tamanho;
 }
 
 template <typename Type>
 Type Pilha<Type>::top() {
   if (isEmpty()) {
-    throw std::runtime_error("Erro: Pilha vazia");
+    throw std::out_of_range("A pilha está vazia");
   }
 
   return topo->getDado();
@@ -133,12 +150,17 @@ void Pilha<Type>::clear() {
 
 template <typename Type>
 void Pilha<Type>::print() {
-  Node<Type>* temp = topo;
+  if (isEmpty()) {
+    std::cout << "Pilha vazia!" << std::endl;
+    return;
+  }
 
+  Node<Type>* temp = topo;
   while (temp != nullptr) {
     std::cout << temp->getDado() << " ";
     temp = temp->getProximo();
   }
+  std::cout << std::endl;
 }
 
 #endif
