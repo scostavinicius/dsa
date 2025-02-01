@@ -34,14 +34,14 @@ class Lista {
   /**
    * @brief Adiciona um novo elemento no início da lista
    *
-   * @param dado Novo dado de tipo genérico que será adicionado na lista
+   * @param dado Novo dado que será adicionado na lista
    */
   void push_front(Type dado);
 
   /**
    * @brief Adiciona um novo elemento no final da lista
    *
-   * @param dado Novo dado de tipo genérico que será adicionado na lista
+   * @param dado Novo dado que será adicionado na lista
    */
   void push_back(Type dado);
 
@@ -49,7 +49,7 @@ class Lista {
    * @brief Adiciona um novo elemento em uma dada posição da lista
    *
    * @param posicao Índice da lista onde será adicionado um novo elemento
-   * @param dado Novo dado de tipo genérico que será adicionado na lista
+   * @param dado Novo dado que será adicionado na lista
    */
   void insert(size_t posicao, Type dado);
 
@@ -61,7 +61,7 @@ class Lista {
   void remove(size_t posicao);
 
   /**
-   * @brief Reseta a lista
+   * @brief Limpa (reseta) completamente a lista
    *
    */
   void clear();
