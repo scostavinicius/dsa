@@ -23,8 +23,8 @@ class Lista {
   void pop_back();
   void push_front(Type dado);
   void push_back(Type dado);
-  void insert(int posicao, Type dado);
-  void remove(int posicao);
+  void insert(size_t posicao, Type dado);
+  void remove(size_t posicao);
   void clear();
   void reverse();
   void print();
@@ -52,7 +52,7 @@ Lista<Type>::~Lista() {
 template <typename Type>
 void Lista<Type>::pop_front() {
   if (tamanho == 0) {
-    throw std::out_of_range("A lista está vazia!");
+    throw std::out_of_range("A lista esta vazia!");
   }
 
   // Mover o ponteiro para o próximo nó.
@@ -72,7 +72,7 @@ void Lista<Type>::pop_front() {
 template <typename Type>
 void Lista<Type>::pop_back() {
   if (tamanho == 0) {
-    throw std::out_of_range("A lista está vazia!");
+    throw std::out_of_range("A lista esta vazia!");
   }
 
   // Se há apenas um nó, limpar toda a lista
@@ -115,80 +115,82 @@ void Lista<Type>::push_front(Type dado) {
 
 template <typename Type>
 void Lista<Type>::push_back(Type dado) {
-  Node<Type>* temp = new Node<Type>(dado);
+  // Cria um novo nó
+  std::unique_ptr<Node<Type>> temp = std::make_unique<Node<Type>>(dado);
 
-  if (lista.getTamanho() == 0) {
-    lista.setPrimeiro(temp);
-    lista.setUltimo(temp);
-    lista.setTamanho(lista.getTamanho() + 1);
-    return;
+  // Se a lista estiver vazia
+  if (tamanho == 0) {
+    primeiro = std::move(temp);
+    ultimo = primeiro.get();
+  } else {
+    // Inserir o novo nó no final da lista
+    ultimo->proximo = std::move(temp);
+    ultimo = ultimo->proximo.get();
   }
 
-  lista.getUltimo()->setProximo(temp);
-  lista.setUltimo(temp);
-  lista.setTamanho(lista.getTamanho() + 1);
+  ++tamanho;
 }
 
 template <typename Type>
-void Lista<Type>::insert(int posicao, Type dado) {
-  if (posicao < 0 || posicao > lista.getTamanho()) {
-    std::cout << "Posicao invalida" << std::endl;
+void Lista<Type>::insert(size_t posicao, Type dado) {
+  if (posicao < 0 || posicao > tamanho) {
+    throw std::out_of_range(
+        "Posicao invalida (menor que 0 ou maior que o tamanho da lista)");
   }
 
+  // Se a posição for 0, apenas faz o push_front
   if (posicao == 0) {
-    lista.push_front(lista, dado);
+    push_front(dado);
     return;
   }
 
-  if (posicao == lista.getTamanho()) {
-    lista.push_back(lista, dado);
+  // Se a posição for igual ao tamanho da lista, apenas faz o push_back
+  if (posicao == tamanho) {
+    push_back(dado);
+    return;
   }
 
-  Node<Type>* temp = lista.getPrimeiro();
-  Node<Type>* temp2 = new Node<Type>(dado);
-
-  for (int i = 0; i < posicao; ++i) {
+  // Percorre até o nó anterior à posição desejada
+  Node<Type>* temp = primeiro.get();
+  for (size_t i = 0; i < posicao - 1; ++i) {
     temp = temp->getProximo();
   }
 
-  temp2->setProximo(temp->getProximo());
-  temp->setProximo(temp2);
+  // O nó temp agora deve apontar para o novo nó e o novo nó deve apontar para o
+  // proximo de temp
+  std::unique_ptr<Node<Type>> novo = std::make_unique<Node<Type>>(dado);
+  novo->setProximo(std::move(temp->proximo));
+  temp->setProximo(std::move(novo));
 
-  lista.setTamanho(lista.getTamanho() + 1);
+  ++tamanho;
 }
 
 template <typename Type>
-void Lista<Type>::remove(int posicao) {
-  if (posicao < 0 || posicao >= lista.getTamanho()) {
-    std::cout << "Posicao invalida" << std::endl;
-    return;
+void Lista<Type>::remove(size_t posicao) {
+  if (posicao >= tamanho) {
+    throw std::out_of_range(
+        "Posicao invalida (maior ou igual ao tamanho da lista)");
   }
 
+  // Se a posição for 0, apenas faz o pop_front
   if (posicao == 0) {
-    lista.pop_front(lista);
+    pop_front();
     return;
   }
 
-  if (posicao == lista.getTamanho() - 1) {
-    lista.pop_back(lista);
-    return;
-  }
-
-  Node<Type>* temp = lista.getPrimeiro();
-  Node<Type>* temp2 = lista.getPrimeiro();
-
-  for (int i = 0; i < posicao; ++i) {
+  // Percorre até o nó anterior ao que será removido
+  Node<Type>* temp = primeiro.get();
+  for (size_t i = 0; i < posicao - 1; ++i) {
     temp = temp->getProximo();
   }
 
-  for (int i = 0; i < posicao - 1; ++i) {
-    temp2 = temp2->getProximo();
-  }
+  // O nó que será removido
+  std::unique_ptr<Node<Type>> toDelete = std::move(temp->proximo);
 
-  temp2->setProximo(temp->getProximo());
-  delete temp;
+  // Corrige o ponteiro do nó anterior para apontar ao próximo do nó removido
+  temp->proximo = std::move(toDelete->proximo);
 
-  lista.setTamanho(lista.getTamanho() - 1);
+  --tamanho;
 }
 
 template <typename Type>
