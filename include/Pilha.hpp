@@ -81,9 +81,7 @@ Pilha<Type>::Pilha(const Pilha<Type>& outraPilha) : Pilha() {
 
 template <typename Type>
 Pilha<Type>::~Pilha() {
-  while (!isEmpty()) {
-    pop();
-  }
+  clear();
 }
 
 template <typename Type>

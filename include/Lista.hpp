@@ -91,11 +91,7 @@ Lista<Type>::Lista(const Lista<Type> &outraLista) : Lista() {
 
 template <typename Type>
 Lista<Type>::~Lista() {
-  // Como usamos unique_ptr, basta resetar o ponteiro "primeiro".
-  // Depois que "primeiro" é resetado, todos os nós são automaticamente
-  // deletados
-  primeiro.reset();
-  tamanho = 0;
+  clear();
 }
 
 template <typename Type>
@@ -244,6 +240,9 @@ void Lista<Type>::remove(size_t posicao) {
 
 template <typename Type>
 void Lista<Type>::clear() {
+  // Como usamos unique_ptr, basta resetar o ponteiro "primeiro".
+  // Depois que "primeiro" é resetado, todos os nós são automaticamente
+  // deletados
   primeiro.reset();
   tamanho = 0;
 }
