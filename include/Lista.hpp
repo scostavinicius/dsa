@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "Node.hpp"
+
 template <typename Type>
 class Lista {
  private:
@@ -18,14 +19,63 @@ class Lista {
   // Destrutor (implementado mais abaixo)
   ~Lista();
 
+  /**
+   * @brief Remove o primeiro elemento da lista
+   *
+   */
   void pop_front();
+
+  /**
+   * @brief Remove o último elemento da lista
+   *
+   */
   void pop_back();
+
+  /**
+   * @brief Adiciona um novo elemento no início da lista
+   *
+   * @param dado Novo dado de tipo genérico que será adicionado na lista
+   */
   void push_front(Type dado);
+
+  /**
+   * @brief Adiciona um novo elemento no final da lista
+   *
+   * @param dado Novo dado de tipo genérico que será adicionado na lista
+   */
   void push_back(Type dado);
+
+  /**
+   * @brief Adiciona um novo elemento em uma dada posição da lista
+   *
+   * @param posicao Índice da lista onde será adicionado um novo elemento
+   * @param dado Novo dado de tipo genérico que será adicionado na lista
+   */
   void insert(size_t posicao, Type dado);
+
+  /**
+   * @brief Remove um elemento em uma dada posição da lista
+   *
+   * @param posicao Índice da lista que será removido
+   */
   void remove(size_t posicao);
+
+  /**
+   * @brief Reseta a lista
+   *
+   */
   void clear();
+
+  /**
+   * @brief Inverte todos elementos da lista
+   *
+   */
   void reverse();
+
+  /**
+   * @brief Imprime todos elementos da lista
+   *
+   */
   void print();
 };
 
