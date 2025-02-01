@@ -91,7 +91,7 @@ Pilha<Type>::Pilha(const Pilha<Type>& outraPilha) : Pilha() {
 
     // Transferir os dados da pilha auxiliar para a nova pilha
     while (!pilhaAux.isEmpty()) {
-      push(pilhaAux.topo);
+      push(pilhaAux.top());
       pilhaAux.pop();
     }
   }
