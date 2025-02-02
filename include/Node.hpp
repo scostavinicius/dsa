@@ -16,10 +16,8 @@ class Node {
   Type getDado() { return dado; };
   void setDado(Type _dado) { dado = _dado; };
 
-  Node<Type>* getProximo() { return proximo.get(); };
-  void setProximo(std::unique_ptr<Node<Type>> prox) {
-    proximo = std::move(prox);
-  };
+  std::unique_ptr<Node<Type>>& getProximo() { return proximo; }
+  void setProximo(std::unique_ptr<Node<Type>>& prox) { proximo = std::move(prox); };
 };
 
 #endif

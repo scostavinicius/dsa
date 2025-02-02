@@ -9,7 +9,7 @@
 template <typename Type>
 class Pilha {
  private:
-  Node<Type>* topo;
+  std::unique_ptr<Node<Type>> topo;
   size_t tamanho;
 
  public:
@@ -74,25 +74,19 @@ class Pilha {
 
 template <typename Type>
 Pilha<Type>::Pilha(const Pilha<Type>& outraPilha) : Pilha() {
-  // Quando a outraPilha é desempilhada, ela fica na ordem inversa. Então temos
-  // que criar uma pilha auxiliar para armazenar a pilha na ordem inversa e
-  // depois desempilhar a auxiliar para a cópia
+  if (!outraPilha.isEmpty()) {
+    // Pegar ponteiros para percorrer ambas as pilhas
+    Node<Type>* atualOrig = outraPilha.topo.get();
+    Node<Type>* atualCopia = topo.get();
 
-  Node<Type>* temp = outraPilha.topo;
+    topo = std::make_unique<Node<Type>>(atualOrig->getDado());
 
-  if (temp != nullptr) {
-    Pilha<Type> pilhaAux;
-
-    // Armazenar os elementos na pilha auxiliar
-    while (temp != nullptr) {
-      pilhaAux.push(temp->getDado());
-      temp = temp->getProximo();
-    }
-
-    // Transferir os dados da pilha auxiliar para a nova pilha
-    while (!pilhaAux.isEmpty()) {
-      push(pilhaAux.top());
-      pilhaAux.pop();
+    // Percorrer a pilha original e copiar os nós um a um
+    while (atualOrig->getProximo() != nullptr) {
+      atualOrig = atualOrig->getProximo();
+      atualCopia->setProximo(std::make_unique<Node<Type>>(atualOrig->getDado()));
+      atualCopia = atualCopia->getProximo().get();
+      ++tamanho;
     }
   }
 }
@@ -112,18 +106,20 @@ void Pilha<Type>::pop() {
   if (isEmpty()) {
     throw std::out_of_range("A pilha está vazia");
   }
-
-  Node<Type>* temp = topo;
-  topo = topo->getProximo();
-  delete temp;
+  topo = std::move(topo->getProximo());
   --tamanho;
 }
 
 template <typename Type>
 void Pilha<Type>::push(Type dado) {
-  Node<Type>* temp = new Node<Type>(dado);
+  // Cria um novo nó
+  std::unique_ptr<Node<Type>> temp = std::make_unique<Node<Type>>(dado);
+
+  // O topo se torna o próximo do novo nó
   temp->setProximo(topo);
-  topo = temp;
+
+  // O novo nó se torna o topo
+  topo = std::move(temp);
   ++tamanho;
 }
 
@@ -155,10 +151,10 @@ void Pilha<Type>::print() {
     return;
   }
 
-  Node<Type>* temp = topo;
+  Node<Type>* temp = topo.get();
   while (temp != nullptr) {
     std::cout << temp->getDado() << " ";
-    temp = temp->getProximo();
+    temp = temp->getProximo().get();
   }
   std::cout << std::endl;
 }
