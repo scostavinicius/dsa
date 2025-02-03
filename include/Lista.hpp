@@ -88,11 +88,11 @@ class Lista {
 
 template <typename Type>
 Lista<Type>::Lista(const Lista<Type>& outraLista) : Lista() {
-  Node<Type>* temp = outraLista.primeiro;
+  Node<Type>* temp = outraLista.primeiro.get();
 
   while (temp != nullptr) {
     push_back(temp->getDado());
-    temp = temp->getProximo();
+    temp = temp->getProximo().get();
   }
 }
 
@@ -249,6 +249,7 @@ void Lista<Type>::clear() {
   // Depois que "primeiro" é resetado, todos os nós são automaticamente
   // deletados
   primeiro.reset();
+  ultimo = nullptr;
   tamanho = 0;
 }
 

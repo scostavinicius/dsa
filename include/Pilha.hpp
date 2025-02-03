@@ -57,7 +57,7 @@ class Pilha {
    * @return true se a pilha estiver vazia
    * @return false se a pilha não estiver vazia
    */
-  bool isEmpty();
+  bool isEmpty() const;
 
   /**
    * @brief Limpa (reseta) completamente a pilha
@@ -73,18 +73,26 @@ class Pilha {
 };
 
 template <typename Type>
-Pilha<Type>::Pilha(const Pilha<Type>& outraPilha) : Pilha() {
+Pilha<Type>::Pilha(const Pilha<Type>& outraPilha) : topo(nullptr), tamanho(0) {
   if (!outraPilha.isEmpty()) {
-    // Pegar ponteiros para percorrer ambas as pilhas
+    // Pegar o ponteiro para o primeiro nó da pilha original
     Node<Type>* atualOrig = outraPilha.topo.get();
-    Node<Type>* atualCopia = topo.get();
 
+    // Criar o primeiro nó da nova pilha
     topo = std::make_unique<Node<Type>>(atualOrig->getDado());
+    Node<Type>* atualCopia = topo.get();
+    ++tamanho;
 
-    // Percorrer a pilha original e copiar os nós um a um
+    // Copiar o restante dos nós
     while (atualOrig->getProximo() != nullptr) {
-      atualOrig = atualOrig->getProximo();
-      atualCopia->setProximo(std::make_unique<Node<Type>>(atualOrig->getDado()));
+      atualOrig = atualOrig->getProximo().get();
+      // Cria o novo nó com o dado do nó atual da pilha original
+      std::unique_ptr<Node<Type>> temp = std::make_unique<Node<Type>>(atualOrig->getDado());
+
+      // Conecta o novo nó ao final da cópia
+      atualCopia->setProximo(temp);
+
+      // Atualiza o ponteiro para o último nó copiado
       atualCopia = atualCopia->getProximo().get();
       ++tamanho;
     }
@@ -97,7 +105,7 @@ Pilha<Type>::~Pilha() {
 }
 
 template <typename Type>
-bool Pilha<Type>::isEmpty() {
+bool Pilha<Type>::isEmpty() const {
   return topo == nullptr;
 }
 

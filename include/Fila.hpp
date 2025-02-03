@@ -9,7 +9,7 @@
 template <typename Type>
 class Fila {
  private:
-  Node<Type>* inicio;
+  std::unique_ptr<Node<Type>> inicio;
   Node<Type>* fim;
   size_t tamanho;
 
@@ -30,6 +30,7 @@ class Fila {
   /**
    * @brief Remove o primeiro elemento da fila
    *
+   * @throw `std::out_of_range` se a fila estiver vazia
    */
   void pop();
 
@@ -37,6 +38,8 @@ class Fila {
    * @brief Retorna o primeiro elemento da fila
    *
    * @return Type
+   *
+   * @throw `std::out_of_range` se a fila estiver vazia
    */
   Type front();
 
@@ -46,7 +49,7 @@ class Fila {
    * @return true se a fila estiver vazia
    * @return false se a fila não estiver vazia
    */
-  bool isEmpty();
+  bool isEmpty() const;
 
   /**
    * @brief Retorna o tamanho da fila
@@ -67,5 +70,93 @@ class Fila {
    */
   void print();
 };
+
+template <typename Type>
+Fila<Type>::Fila(const Fila<Type>& outraFila) : Fila() {
+  Node<Type>* atualOrig = outraFila.inicio.get();
+  while (atualOrig != nullptr) {
+    push(atualOrig->getDado());
+    atualOrig = atualOrig->getProximo().get();
+  }
+}
+
+template <typename Type>
+Fila<Type>::~Fila() {
+  clear();
+}
+
+template <typename Type>
+void Fila<Type>::push(Type dado) {
+  std::unique_ptr<Node<Type>> novo = std::make_unique<Node<Type>>(dado);
+  if (isEmpty()) {
+    inicio = std::move(novo);
+    fim = inicio.get();
+  } else {
+    fim->setProximo(novo);
+    fim = fim->getProximo().get();
+  }
+  ++tamanho;
+}
+
+template <typename Type>
+void Fila<Type>::pop() {
+  if (isEmpty()) {
+    throw std::out_of_range("A fila está vazia");
+  }
+
+  // Mover a posse do nó atual para um ponteiro temporário
+  std::unique_ptr<Node<Type>> temp = std::move(inicio);
+
+  // Atualizar o ponteiro "inicio" para apontar para o próximo nó
+  inicio = std::move(temp->getProximo());
+
+  // Se a lista ficou vazia após a remoção, atualizar "fim"
+  if (!inicio) {
+    fim = nullptr;
+  }
+
+  --tamanho;
+}
+
+template <typename Type>
+Type Fila<Type>::front() {
+  if (isEmpty()) {
+    throw std::out_of_range("A pilha está vazia");
+  }
+
+  return inicio->getDado();
+}
+
+template <typename Type>
+bool Fila<Type>::isEmpty() const {
+  return inicio == nullptr;
+}
+
+template <typename Type>
+size_t Fila<Type>::size() {
+  return tamanho;
+}
+
+template <typename Type>
+void Fila<Type>::clear() {
+  inicio.reset();
+  fim = nullptr;
+  tamanho = 0;
+}
+
+template <typename Type>
+void Fila<Type>::print() {
+  if (isEmpty()) {
+    std::cout << "Fila vazia!" << std::endl;
+    return;
+  }
+
+  Node<Type>* temp = inicio.get();
+  while (temp != nullptr) {
+    std::cout << temp->getDado() << " ";
+    temp = temp->getProximo().get();
+  }
+  std::cout << std::endl;
+}
 
 #endif
