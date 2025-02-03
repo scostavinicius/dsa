@@ -29,13 +29,21 @@ void testarLista() {
   std::cout << "Conteudo da lista: ";
   lista.print();
 
-  // Testando pop
-  std::cout << "Removendo elemento do inicio e do final" << std::endl;
-  lista.pop_front();
-  lista.pop_back();
+  // Testando o construtor de cópia após modificações
+  Lista<int> listaCopia2 = lista;
+  std::cout << "Conteudo da lista copiada apos modificacoes: ";
+  listaCopia2.print();
 
-  std::cout << "Conteudo da lista: ";
-  lista.print();
+  try {
+    // Testando pop
+    std::cout << "Removendo elemento do inicio e do final" << std::endl;
+    lista.pop_front();
+    lista.pop_back();
+    std::cout << "Conteudo da lista: ";
+    lista.print();
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << '\n';
+  }
 
   // Testando insert
   std::cout << "Adicionando elementos 1000 no indice 2 e 2000 no indice 3" << std::endl;
@@ -45,13 +53,16 @@ void testarLista() {
   std::cout << "Conteudo da lista: ";
   lista.print();
 
-  // Testando remove
-  std::cout << "Removendo elementos no indice 2 e no indice 1" << std::endl;
-  lista.remove(2);
-  lista.remove(1);
-
-  std::cout << "Conteudo da lista: ";
-  lista.print();
+  try {
+    // Testando remove
+    std::cout << "Removendo elementos no indice 2 e no indice 1" << std::endl;
+    lista.remove(2);
+    lista.remove(1);
+    std::cout << "Conteudo da lista: ";
+    lista.print();
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << '\n';
+  }
 
   // Testando reverse
   std::cout << "Invertendo a lista..." << std::endl;
@@ -84,16 +95,26 @@ void testarPilha() {
   std::cout << "Conteudo da pilha: ";
   pilha.print();
 
-  // Testando top
-  std::cout << "Topo da pilha: " << pilha.top() << std::endl;
+  Pilha<int> pilhaCopia = pilha;
+  std::cout << "Conteudo da pilha copiada: ";
+  pilhaCopia.print();
 
-  // Testando pop
-  std::cout << "Desempilhando elemento..." << std::endl;
-  pilha.pop();
+  try {
+    // Testando top
+    std::cout << "Topo da pilha: " << pilha.top() << std::endl;
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << '\n';
+  }
 
-  // Testando print novamente
-  std::cout << "Conteudo da pilha apos pop: ";
-  pilha.print();
+  try {
+    // Testando pop
+    std::cout << "Desempilhando elemento..." << std::endl;
+    pilha.pop();
+    std::cout << "Conteudo da pilha apos pop: ";
+    pilha.print();
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << '\n';
+  }
 
   // Testando tamanho
   std::cout << "Tamanho da pilha: " << pilha.size() << std::endl;
@@ -108,11 +129,58 @@ void testarPilha() {
   std::cout << std::endl;
 }
 
-void testarFila() {}
+void testarFila() {
+  Fila<int> fila;
+
+  std::cout << "Testando fila: " << std::endl;
+
+  // Testando push
+  std::cout << "Enfileirando elementos: 10, 20, 30" << std::endl;
+  fila.push(10);
+  fila.push(20);
+  fila.push(30);
+
+  // Testando print
+  std::cout << "Conteudo da fila: ";
+  fila.print();
+
+  Fila<int> filaCopia = fila;
+  std::cout << "Conteudo da fila copiada: ";
+  filaCopia.print();
+
+  try {
+    // Testando front
+    std::cout << "Frente da fila: " << fila.front() << std::endl;
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << '\n';
+  }
+
+  try {
+    std::cout << "Desenfileirando elemento..." << std::endl;
+    fila.pop();
+    std::cout << "Conteudo da fila: ";
+    fila.print();
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << '\n';
+  }
+
+  // Testando tamanho
+  std::cout << "Tamanho da fila: " << fila.size() << std::endl;
+
+  // Testando clear
+  std::cout << "Limpando a fila..." << std::endl;
+  fila.clear();
+  std::cout << "Conteudo da fila: ";
+  fila.print();
+  std::cout << "A fila esta vazia? " << (fila.isEmpty() ? "Sim" : "Nao") << std::endl;
+
+  std::cout << std::endl;
+}
 
 int main() {
   testarLista();
   testarPilha();
+  testarFila();
 
   return 0;
 }
