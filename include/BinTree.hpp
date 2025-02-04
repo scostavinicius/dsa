@@ -19,6 +19,8 @@ class BinTree {
 
  public:
   BinTree() : raiz(nullptr) {}
+  BinTree(const BinTree<Type>& outraArvore);
+  ~BinTree();
 
   /**
    * @brief Insere um valor na árvore binária de busca.
@@ -66,6 +68,16 @@ class BinTree {
 
  private:
   /**
+   * @brief Função auxiliar utilizada pelo Construtor cópia
+   *
+   * Essa função é utilizada para copiar recursivamente os valores dos nós de uma árvore binária
+   *
+   * @param arvore Árvore destino da cópia
+   * @param node Nó atual da árvore que está sendo copiada
+   */
+  void auxCopia(BinTree<Type>& arvore, const Node<Type>* node);
+
+  /**
    * @brief Insere um valor em um nó da árvore de forma recursiva.
    *
    * Esse método recursivo é chamado pela função pública `inserir`. Ele compara o valor a ser
@@ -108,6 +120,26 @@ class BinTree {
    */
   void posOrdem(Node<Type>* node);
 };
+
+template <typename Type>
+void BinTree<Type>::auxCopia(BinTree<Type>& arvore, const Node<Type>* node) {
+  if (node != nullptr) {
+    arvore.inserir(node->valor);
+    auxCopia(arvore, node->left);
+    auxCopia(arvore, node->right);
+  }
+}
+
+template <typename Type>
+BinTree<Type>::BinTree(const BinTree<Type>& outraArvore) : BinTree() {
+  if (outraArvore.raiz != nullptr) {
+    inserir(outraArvore.raiz->valor);
+
+    // Copia recursivamente os demais nós (subárvores esquerda e direita)
+    auxCopia(*this, outraArvore.raiz->left);
+    auxCopia(*this, outraArvore.raiz->right);
+  }
+}
 
 template <typename Type>
 void BinTree<Type>::inserir(Type valor) {
