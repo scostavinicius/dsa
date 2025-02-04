@@ -35,6 +35,16 @@ class BinTree {
   void inserir(Type valor);
 
   /**
+   * @brief Percorre a árvore em pré-ordem (pre-order) e imprime os valores.
+   *
+   * O método percorre a árvore no sentido raiz -> esquerda -> direita e imprime os valores
+   * encontrados.
+   *
+   * Esse método chama o método recursivo `preOrdem(Node<Type>* node)` para realizar o percurso.
+   */
+  void preOrdem();
+
+  /**
    * @brief Percorre a árvore em ordem (in-order) e imprime os valores.
    *
    * O método percorre a árvore no sentido esquerda -> raiz -> direita e imprime os valores
@@ -43,6 +53,16 @@ class BinTree {
    * Esse método chama o método recursivo `emOrdem(Node<Type>* node)` para realizar o percurso.
    */
   void emOrdem();
+
+  /**
+   * @brief Percorre a árvore em pós-ordem (post-order) e imprime os valores.
+   *
+   * O método percorre a árvore no sentido esquerda -> direita -> raiz e imprime os valores
+   * encontrados.
+   *
+   * Esse método chama o método recursivo `posOrdem(Node<Type>* node)` para realizar o percurso.
+   */
+  void posOrdem();
 
  private:
   /**
@@ -59,6 +79,16 @@ class BinTree {
   Node<Type>* inserir(Node<Type>* node, Type valor);
 
   /**
+   * @brief Realiza um percurso recursivo pré-ordem na árvore e imprime os valores.
+   *
+   * Esse método percorre a árvore recursivamente, visitando o nó raiz, a subárvore esquerda,
+   * e a subárvore direita, imprimindo os valores no caminho.
+   *
+   * @param node O nó atual da árvore que está sendo percorrido.
+   */
+  void preOrdem(Node<Type>* node);
+
+  /**
    * @brief Realiza um percurso recursivo em ordem na árvore e imprime os valores.
    *
    * Esse método percorre a árvore recursivamente, visitando a subárvore esquerda, o nó raiz
@@ -67,6 +97,16 @@ class BinTree {
    * @param node O nó atual da árvore que está sendo percorrido.
    */
   void emOrdem(Node<Type>* node);
+
+  /**
+   * @brief Realiza um percurso recursivo em ordem na árvore e imprime os valores.
+   *
+   * Esse método percorre a árvore recursivamente, visitando a subárvore esquerda, a subárvore
+   * direita e o nó raiz, imprimindo os valores no caminho.
+   *
+   * @param node O nó atual da árvore que está sendo percorrido.
+   */
+  void posOrdem(Node<Type>* node);
 };
 
 template <typename Type>
@@ -90,6 +130,21 @@ Node<Type>* BinTree<Type>::inserir(Node<Type>* node, Type valor) {
 }
 
 template <typename Type>
+void BinTree<Type>::preOrdem() {
+  preOrdem(raiz);
+  std::cout << std::endl;
+}
+
+template <typename Type>
+void BinTree<Type>::preOrdem(Node<Type>* node) {
+  if (node == nullptr) return;
+
+  std::cout << node->valor << " ";
+  preOrdem(node->left);
+  preOrdem(node->right);
+}
+
+template <typename Type>
 void BinTree<Type>::emOrdem() {
   emOrdem(raiz);
   std::cout << std::endl;
@@ -102,6 +157,21 @@ void BinTree<Type>::emOrdem(Node<Type>* node) {
   emOrdem(node->left);
   std::cout << node->valor << " ";
   emOrdem(node->right);
+}
+
+template <typename Type>
+void BinTree<Type>::posOrdem() {
+  posOrdem(raiz);
+  std::cout << std::endl;
+}
+
+template <typename Type>
+void BinTree<Type>::posOrdem(Node<Type>* node) {
+  if (node == nullptr) return;
+
+  posOrdem(node->left);
+  posOrdem(node->right);
+  std::cout << node->valor << " ";
 }
 
 #endif
