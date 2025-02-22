@@ -1,2 +1,3 @@
-# TADs
-Algumas implementações de Tipos Abstratos de Dados
+# DSA
+
+Repositório dedicado ao estudo de Estruturas de dados e Algoritmos
