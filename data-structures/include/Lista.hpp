@@ -3,13 +3,45 @@
 
 #include <iostream>
 
-#include "Node.hpp"
+template <typename Type>
+struct Node {
+  Type valor;
 
+  /**
+   * @brief Aponta para o próximo nó
+   *
+   */
+  Node* proximo;
+
+  Node(Type valor) : valor(valor), proximo(nullptr) {}
+};
+
+/**
+ * @brief Lista ligada simples
+ *
+ * @tparam Type
+ *
+ * @
+ */
 template <typename Type>
 class Lista {
  private:
-  std::unique_ptr<Node<Type>> primeiro;
+  /**
+   * @brief Ponteiro para o primeiro nó da lista
+   *
+   */
+  Node<Type>* primeiro;
+
+  /**
+   * @brief Ponteiro para o último nó da lista
+   *
+   */
   Node<Type>* ultimo;
+
+  /**
+   * @brief Número de elementos na lista
+   *
+   */
   size_t tamanho;
 
  public:
@@ -88,12 +120,25 @@ class Lista {
 
 template <typename Type>
 Lista<Type>::Lista(const Lista<Type>& outraLista) : Lista() {
-  Node<Type>* temp = outraLista.primeiro.get();
-
-  while (temp != nullptr) {
-    push_back(temp->getDado());
-    temp = temp->getProximo().get();
+  if (outraLista.primeiro == nullptr) {
+    return;
   }
+
+  // Criação do primeiro no da lista cópia
+  primeiro = new Node<Type>(outraLista.primeiro->valor);
+
+  // Nós para percorrer as listas
+  Node<Type>* atualCopia = primeiro;
+  Node<Type>* atualOrig = outraLista.primeiro->proximo;
+
+  while (atualOrig != nullptr) {
+    atualCopia->proximo = new Node<Type>(atualOrig->valor);
+    atualCopia = atualCopia->proximo;
+    atualOrig = atualOrig->proximo;
+  }
+
+  ultimo = atualCopia;
+  tamanho = outraLista.tamanho;
 }
 
 template <typename Type>
@@ -103,22 +148,19 @@ Lista<Type>::~Lista() {
 
 template <typename Type>
 void Lista<Type>::pop_front() {
-  if (!primeiro) {
-    throw std::out_of_range("A lista está vazia!");
+  if (tamanho == 0) {
+    throw std::out_of_range("A lista esta vazia!");
   }
 
-  // Mover a posse do nó atual para um ponteiro temporário
-  std::unique_ptr<Node<Type>> temp = std::move(primeiro);
-
-  // Atualizar o ponteiro "primeiro" para apontar para o próximo nó
-  primeiro = std::move(temp->getProximo());
-
-  // Se a lista ficou vazia após a remoção, atualizar "ultimo"
-  if (!primeiro) {
-    ultimo = nullptr;
-  }
+  Node<Type>* aux = primeiro;
+  primeiro = primeiro->proximo;
+  delete aux;
 
   --tamanho;
+
+  if (tamanho == 0) {
+    ultimo = nullptr;
+  }
 }
 
 template <typename Type>
@@ -127,39 +169,39 @@ void Lista<Type>::pop_back() {
     throw std::out_of_range("A lista esta vazia!");
   }
 
-  // Se há apenas um nó, limpar toda a lista
   if (tamanho == 1) {
-    primeiro.reset();
+    delete primeiro;
+    primeiro = nullptr;
     ultimo = nullptr;
-    tamanho = 0;
-    return;
+  } else {
+    // Percorrer a lista para encontrar o penúltimo nó
+    Node<Type>* penultimo = primeiro;
+    while (penultimo->proximo != ultimo) {
+      penultimo = penultimo->proximo;
+    }
+
+    // Remover o último nó
+    delete ultimo;
+    penultimo->proximo = nullptr;
+    ultimo = penultimo;
   }
 
-  // Percorrer a lista para encontrar o penúltimo nó
-  Node<Type>* penultimo = primeiro.get();
-  while (penultimo->getProximo().get()->getProximo().get()) {
-    penultimo = penultimo->getProximo().get();
-  }
-
-  // Remover o último nó
-  penultimo->getProximo().reset();
-  ultimo = penultimo;
   --tamanho;
 }
 
 template <typename Type>
 void Lista<Type>::push_front(Type dado) {
   // Criar um novo nó
-  std::unique_ptr<Node<Type>> temp = std::make_unique<Node<Type>>(dado);
+  Node<Type>* novo = new Node<Type>(dado);
 
   // Se a lista estiver vazia
   if (tamanho == 0) {
-    primeiro = std::move(temp);
-    ultimo = primeiro.get();
+    primeiro = novo;
+    ultimo = novo;
   } else {
     // Inserir o novo nó na frente da lista
-    temp->setProximo(primeiro);
-    primeiro = std::move(temp);
+    novo->proximo = primeiro;
+    primeiro = novo;
   }
 
   ++tamanho;
@@ -168,16 +210,16 @@ void Lista<Type>::push_front(Type dado) {
 template <typename Type>
 void Lista<Type>::push_back(Type dado) {
   // Cria um novo nó
-  std::unique_ptr<Node<Type>> temp = std::make_unique<Node<Type>>(dado);
+  Node<Type>* novo = new Node<Type>(dado);
 
   // Se a lista estiver vazia
   if (tamanho == 0) {
-    primeiro = std::move(temp);
-    ultimo = primeiro.get();
+    primeiro = novo;
+    ultimo = novo;
   } else {
     // Inserir o novo nó no final da lista
-    ultimo->setProximo(temp);
-    ultimo = ultimo->getProximo().get();
+    ultimo->proximo = novo;
+    ultimo = ultimo->proximo;
   }
 
   ++tamanho;
@@ -202,16 +244,17 @@ void Lista<Type>::insert(size_t posicao, Type dado) {
   }
 
   // Percorre até o nó anterior à posição desejada
-  Node<Type>* temp = primeiro.get();
+  Node<Type>* temp = primeiro;
   for (size_t i = 0; i < posicao - 1; ++i) {
-    temp = temp->getProximo().get();
+    temp = temp->proximo;
   }
 
-  // O nó temp agora deve apontar para o novo nó e o novo nó deve apontar para o
-  // proximo de temp
-  std::unique_ptr<Node<Type>> novo = std::make_unique<Node<Type>>(dado);
-  novo->setProximo(temp->getProximo());
-  temp->setProximo(novo);
+  // Cria um novo nó
+  Node<Type>* novo = new Node<Type>(dado);
+
+  // O novo nó deve ficar entre o nó temp e o nó depois de temp
+  novo->proximo = temp->proximo;
+  temp->proximo = novo;
 
   ++tamanho;
 }
@@ -229,68 +272,81 @@ void Lista<Type>::remove(size_t posicao) {
   }
 
   // Percorre até o nó anterior ao que será removido
-  Node<Type>* temp = primeiro.get();
+  Node<Type>* temp = primeiro;
   for (size_t i = 0; i < posicao - 1; ++i) {
-    temp = temp->getProximo().get();
+    temp = temp->proximo;
   }
 
   // O nó que será removido
-  std::unique_ptr<Node<Type>> toDelete = std::move(temp->getProximo());
+  Node<Type>* deletar = temp->proximo;
 
-  // Corrige o ponteiro do nó anterior para apontar ao próximo do nó removido
-  temp->setProximo(toDelete->getProximo());
+  // Corrige o ponteiro do nó anterior para apontar ao nó após o nó removido
+  temp->proximo = deletar->proximo;
+
+  // Se o nó removido era o último, atualiza o ponteiro 'ultimo'
+  if (deletar == ultimo) {
+    ultimo = temp;
+  }
+
+  delete deletar;
 
   --tamanho;
 }
 
 template <typename Type>
 void Lista<Type>::clear() {
-  // Como usamos unique_ptr, basta resetar o ponteiro "primeiro".
-  // Depois que "primeiro" é resetado, todos os nós são automaticamente
-  // deletados
-  primeiro.reset();
+  Node<Type>* atual = primeiro;
+
+  while (atual != nullptr) {
+    Node<Type>* posterior = atual->proximo;
+    delete atual;
+    atual = posterior;
+  }
+
+  primeiro = nullptr;
   ultimo = nullptr;
   tamanho = 0;
 }
 
 template <typename Type>
 void Lista<Type>::reverse() {
-  // Criação dos nós anterior, atual e posterior, nós auxiliares para reverter a
+  // Criação dos nós anterior, atual e posterior, nós auxiliares para inverter a
   // lista
-  std::unique_ptr<Node<Type>> anterior = nullptr;
-  std::unique_ptr<Node<Type>> atual = std::move(primeiro);
-  std::unique_ptr<Node<Type>> posterior = nullptr;
+  Node<Type>* anterior = nullptr;
+  Node<Type>* atual = primeiro;
+  Node<Type>* posterior = nullptr;
 
   // Percorre a lista e inverte os ponteiros
   while (atual) {
-    posterior = std::move(atual->getProximo());
-    atual->setProximo(anterior);
-    anterior = std::move(atual);
-    atual = std::move(posterior);
+    posterior = atual->proximo;
+    atual->proximo = anterior;
+    anterior = atual;
+    atual = posterior;
   }
 
-  primeiro = std::move(anterior);
+  // Atualiza o primeiro
+  primeiro = anterior;
 
-  // Colocar o último no lugar certo
-  ultimo = primeiro.get();
-  while (ultimo && ultimo->getProximo()) {
-    ultimo = ultimo->getProximo().get();
+  // Atualiza o último
+  ultimo = primeiro;
+  while (ultimo && ultimo->proximo) {
+    ultimo = ultimo->proximo;
   }
 }
 
 template <typename Type>
 void Lista<Type>::print() {
-  Node<Type>* temp = primeiro.get();
+  Node<Type>* temp = primeiro;
 
-  if (temp == nullptr) {
+  if (!temp) {
     std::cout << "A lista esta vazia!" << std::endl;
     return;
   }
 
   // Percorre e imprime os elementos da lista
-  while (temp != nullptr) {
-    std::cout << temp->getDado() << " ";
-    temp = temp->getProximo().get();
+  while (temp) {
+    std::cout << temp->valor << " ";
+    temp = temp->proximo;
   }
 
   std::cout << std::endl;
