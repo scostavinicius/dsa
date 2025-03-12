@@ -4,13 +4,23 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "Node.hpp"
-
 template <typename Type>
 class Fila {
  private:
-  std::unique_ptr<Node<Type>> inicio;
-  Node<Type>* fim;
+  struct Node {
+    Type valor;
+
+    /**
+     * @brief Aponta para o próximo nó
+     *
+     */
+    Node* proximo;
+
+    Node(Type valor) : valor(valor), proximo(nullptr) {}
+  };
+
+  Node* inicio;
+  Node* fim;
   size_t tamanho;
 
  public:
@@ -73,10 +83,13 @@ class Fila {
 
 template <typename Type>
 Fila<Type>::Fila(const Fila<Type>& outraFila) : Fila() {
-  Node<Type>* atualOrig = outraFila.inicio.get();
+  // Cria um novo nó para o início da outra fila
+  Node* atualOrig = outraFila.inicio;
+
+  // Percorre a outra fila adicionando cópias de seus elementos na fila cópia
   while (atualOrig != nullptr) {
-    push(atualOrig->getDado());
-    atualOrig = atualOrig->getProximo().get();
+    push(atualOrig->valor);
+    atualOrig = atualOrig->proximo;
   }
 }
 
@@ -87,14 +100,17 @@ Fila<Type>::~Fila() {
 
 template <typename Type>
 void Fila<Type>::push(Type dado) {
-  std::unique_ptr<Node<Type>> novo = std::make_unique<Node<Type>>(dado);
-  if (isEmpty()) {
-    inicio = std::move(novo);
-    fim = inicio.get();
-  } else {
-    fim->setProximo(novo);
-    fim = fim->getProximo().get();
+  // Cria um novo nó
+  Node* novo = new Node(dado);
+
+  if (isEmpty()) {  // Se a fila estiver vazia
+    inicio = novo;  // O início e o fim se tornam o novo nó
+    fim = inicio;
+  } else {                // Se não estiver vazia
+    fim->proximo = novo;  // Adiciona o novo nó no final
+    fim = fim->proximo;   // O nó final se torna o novo nó
   }
+
   ++tamanho;
 }
 
@@ -105,17 +121,20 @@ void Fila<Type>::pop() {
   }
 
   // Mover a posse do nó atual para um ponteiro temporário
-  std::unique_ptr<Node<Type>> temp = std::move(inicio);
+  Node* temp = inicio;
 
   // Atualizar o ponteiro "inicio" para apontar para o próximo nó
-  inicio = std::move(temp->getProximo());
+  inicio = temp->proximo;
 
-  // Se a lista ficou vazia após a remoção, atualizar "fim"
-  if (!inicio) {
-    fim = nullptr;
-  }
+  // Desaloca o nó temporário
+  delete temp;
 
   --tamanho;
+
+  // Se a lista ficou vazia após a remoção, atualizar "fim"
+  if (isEmpty()) {
+    fim = nullptr;
+  }
 }
 
 template <typename Type>
@@ -124,7 +143,7 @@ Type Fila<Type>::front() {
     throw std::out_of_range("A pilha está vazia");
   }
 
-  return inicio->getDado();
+  return inicio->valor;
 }
 
 template <typename Type>
@@ -139,9 +158,9 @@ size_t Fila<Type>::size() {
 
 template <typename Type>
 void Fila<Type>::clear() {
-  inicio.reset();
-  fim = nullptr;
-  tamanho = 0;
+  while (!isEmpty()) {
+    pop();
+  }
 }
 
 template <typename Type>
@@ -151,10 +170,10 @@ void Fila<Type>::print() {
     return;
   }
 
-  Node<Type>* temp = inicio.get();
+  Node* temp = inicio;
   while (temp != nullptr) {
-    std::cout << temp->getDado() << " ";
-    temp = temp->getProximo().get();
+    std::cout << temp->valor << " ";
+    temp = temp->proximo;
   }
   std::cout << std::endl;
 }

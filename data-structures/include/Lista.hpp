@@ -3,19 +3,6 @@
 
 #include <iostream>
 
-template <typename Type>
-struct Node {
-  Type valor;
-
-  /**
-   * @brief Aponta para o próximo nó
-   *
-   */
-  Node* proximo;
-
-  Node(Type valor) : valor(valor), proximo(nullptr) {}
-};
-
 /**
  * @brief Lista ligada simples
  *
