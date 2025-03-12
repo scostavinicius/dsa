@@ -4,12 +4,22 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "Node.hpp"
-
 template <typename Type>
 class Pilha {
  private:
-  std::unique_ptr<Node<Type>> topo;
+  struct Node {
+    Type valor;
+
+    /**
+     * @brief Aponta para o próximo nó
+     *
+     */
+    Node* proximo;
+
+    Node(Type valor) : valor(valor), proximo(nullptr) {}
+  };
+
+  Node* topo;
   size_t tamanho;
 
  public:

@@ -26,6 +26,18 @@ struct Node {
 template <typename Type>
 class Lista {
  private:
+  struct Node {
+    Type valor;
+
+    /**
+     * @brief Aponta para o próximo nó
+     *
+     */
+    Node* proximo;
+
+    Node(Type valor) : valor(valor), proximo(nullptr) {}
+  };
+
   /**
    * @brief Ponteiro para o primeiro nó da lista
    *
@@ -36,7 +48,7 @@ class Lista {
    * @brief Ponteiro para o último nó da lista
    *
    */
-  Node<Type>* ultimo;
+  Node* ultimo;
 
   /**
    * @brief Número de elementos na lista
@@ -125,11 +137,11 @@ Lista<Type>::Lista(const Lista<Type>& outraLista) : Lista() {
   }
 
   // Criação do primeiro no da lista cópia
-  primeiro = new Node<Type>(outraLista.primeiro->valor);
+  primeiro = new Node(outraLista.primeiro->valor);
 
   // Nós para percorrer as listas
-  Node<Type>* atualCopia = primeiro;
-  Node<Type>* atualOrig = outraLista.primeiro->proximo;
+  Node* atualCopia = primeiro;
+  Node* atualOrig = outraLista.primeiro->proximo;
 
   while (atualOrig != nullptr) {
     atualCopia->proximo = new Node<Type>(atualOrig->valor);
@@ -152,7 +164,7 @@ void Lista<Type>::pop_front() {
     throw std::out_of_range("A lista esta vazia!");
   }
 
-  Node<Type>* aux = primeiro;
+  Node* aux = primeiro;
   primeiro = primeiro->proximo;
   delete aux;
 
@@ -175,7 +187,7 @@ void Lista<Type>::pop_back() {
     ultimo = nullptr;
   } else {
     // Percorrer a lista para encontrar o penúltimo nó
-    Node<Type>* penultimo = primeiro;
+    Node* penultimo = primeiro;
     while (penultimo->proximo != ultimo) {
       penultimo = penultimo->proximo;
     }
@@ -192,7 +204,7 @@ void Lista<Type>::pop_back() {
 template <typename Type>
 void Lista<Type>::push_front(Type dado) {
   // Criar um novo nó
-  Node<Type>* novo = new Node<Type>(dado);
+  Node* novo = new Node<Type>(dado);
 
   // Se a lista estiver vazia
   if (tamanho == 0) {
@@ -210,7 +222,7 @@ void Lista<Type>::push_front(Type dado) {
 template <typename Type>
 void Lista<Type>::push_back(Type dado) {
   // Cria um novo nó
-  Node<Type>* novo = new Node<Type>(dado);
+  Node* novo = new Node(dado);
 
   // Se a lista estiver vazia
   if (tamanho == 0) {
@@ -244,13 +256,13 @@ void Lista<Type>::insert(size_t posicao, Type dado) {
   }
 
   // Percorre até o nó anterior à posição desejada
-  Node<Type>* temp = primeiro;
+  Node* temp = primeiro;
   for (size_t i = 0; i < posicao - 1; ++i) {
     temp = temp->proximo;
   }
 
   // Cria um novo nó
-  Node<Type>* novo = new Node<Type>(dado);
+  Node* novo = new Node(dado);
 
   // O novo nó deve ficar entre o nó temp e o nó depois de temp
   novo->proximo = temp->proximo;
@@ -272,13 +284,13 @@ void Lista<Type>::remove(size_t posicao) {
   }
 
   // Percorre até o nó anterior ao que será removido
-  Node<Type>* temp = primeiro;
+  Node* temp = primeiro;
   for (size_t i = 0; i < posicao - 1; ++i) {
     temp = temp->proximo;
   }
 
   // O nó que será removido
-  Node<Type>* deletar = temp->proximo;
+  Node* deletar = temp->proximo;
 
   // Corrige o ponteiro do nó anterior para apontar ao nó após o nó removido
   temp->proximo = deletar->proximo;
@@ -295,10 +307,10 @@ void Lista<Type>::remove(size_t posicao) {
 
 template <typename Type>
 void Lista<Type>::clear() {
-  Node<Type>* atual = primeiro;
+  Node* atual = primeiro;
 
   while (atual != nullptr) {
-    Node<Type>* posterior = atual->proximo;
+    Node* posterior = atual->proximo;
     delete atual;
     atual = posterior;
   }
@@ -312,9 +324,9 @@ template <typename Type>
 void Lista<Type>::reverse() {
   // Criação dos nós anterior, atual e posterior, nós auxiliares para inverter a
   // lista
-  Node<Type>* anterior = nullptr;
-  Node<Type>* atual = primeiro;
-  Node<Type>* posterior = nullptr;
+  Node* anterior = nullptr;
+  Node* atual = primeiro;
+  Node* posterior = nullptr;
 
   // Percorre a lista e inverte os ponteiros
   while (atual) {
@@ -336,7 +348,7 @@ void Lista<Type>::reverse() {
 
 template <typename Type>
 void Lista<Type>::print() {
-  Node<Type>* temp = primeiro;
+  Node* temp = primeiro;
 
   if (!temp) {
     std::cout << "A lista esta vazia!" << std::endl;
