@@ -3,6 +3,11 @@
 
 #include <iostream>
 
+/**
+ * @brief Árvore binária de busca
+ *
+ * @tparam Type
+ */
 template <typename Type>
 class BinTree {
  private:
@@ -28,12 +33,12 @@ class BinTree {
    * atual, ele é adicionado à subárvore esquerda. Caso contrário, ele é adicionado à subárvore
    * direita.
    *
-   * Esse método chama o método recursivo `inserir(Node<Type>* node, Type valor)` para realizar a
+   * Esse método chama o método recursivo `insert(Node* node, Type valor)` para realizar a
    * inserção no nó apropriado.
    *
    * @param valor O valor a ser inserido na árvore.
    */
-  void inserir(Type valor);
+  void insert(Type valor);
 
   /**
    * @brief Percorre a árvore em pré-ordem (pre-order) e imprime os valores.
@@ -41,9 +46,9 @@ class BinTree {
    * O método percorre a árvore no sentido raiz -> esquerda -> direita e imprime os valores
    * encontrados.
    *
-   * Esse método chama o método recursivo `preOrdem(Node<Type>* node)` para realizar o percurso.
+   * Esse método chama o método recursivo `preOrder(Node* node)` para realizar o percurso.
    */
-  void preOrdem();
+  void preOrder();
 
   /**
    * @brief Percorre a árvore em ordem (in-order) e imprime os valores.
@@ -51,9 +56,9 @@ class BinTree {
    * O método percorre a árvore no sentido esquerda -> raiz -> direita e imprime os valores
    * encontrados.
    *
-   * Esse método chama o método recursivo `emOrdem(Node<Type>* node)` para realizar o percurso.
+   * Esse método chama o método recursivo `inOrder(Node* node)` para realizar o percurso.
    */
-  void emOrdem();
+  void inOrder();
 
   /**
    * @brief Percorre a árvore em pós-ordem (post-order) e imprime os valores.
@@ -61,13 +66,25 @@ class BinTree {
    * O método percorre a árvore no sentido esquerda -> direita -> raiz e imprime os valores
    * encontrados.
    *
-   * Esse método chama o método recursivo `posOrdem(Node<Type>* node)` para realizar o percurso.
+   * Esse método chama o método recursivo `postOrder(Node* node)` para realizar o percurso.
    */
-  void posOrdem();
+  void postOrder();
+
+  /**
+   * @brief Verifica se um valor específico está presente na árvore.
+   *
+   * O método utiliza a lógica de implementação da árvore binária de busca para procurar pelo valor.
+   *
+   * Esse método chama o método recursivo `search(Node* node, Type valor)` para realizar a
+   * busca.
+   *
+   * @param valor O valor a ser buscado na árvore
+   */
+  bool search(Type valor) const;
 
  private:
   /**
-   * @brief Função auxiliar utilizada pelo Construtor cópia
+   * @brief Função auxiliar utilizada pelo Construtor cópia.
    *
    * Essa função é utilizada para copiar recursivamente os valores dos nós de uma árvore binária
    *
@@ -77,17 +94,25 @@ class BinTree {
   void auxCopia(BinTree<Type>& arvore, const Node* node);
 
   /**
+   * @brief Função auxiliar utilizada pelo Destrutor.
+   *
+   * Essa função é utilizada para destruir recursivamente os valores dos nós de uma árvore binária
+   *
+   * @param node Nó atual da árvore que está sendo destruida
+   */
+  void auxDestrutor(Node* node);
+
+  /**
    * @brief Insere um valor em um nó da árvore de forma recursiva.
    *
-   * Esse método recursivo é chamado pela função pública `inserir`. Ele compara o valor a ser
-   * inserido com o valor do nó atual e decide se o valor deve ser inserido na subárvore esquerda ou
-   * direita.
+   * Esse método compara o valor a ser inserido com o valor do nó atual e decide se o valor deve ser
+   * inserido na subárvore esquerda ou direita.
    *
    * @param node O nó atual da árvore onde a inserção será realizada.
    * @param valor O valor a ser inserido no nó.
    * @return Retorna o nó atual, que pode ter sido modificado durante a inserção.
    */
-  Node* inserir(Node* node, Type valor);
+  Node* insert(Node* node, Type valor);
 
   /**
    * @brief Realiza um percurso recursivo pré-ordem na árvore e imprime os valores.
@@ -97,7 +122,7 @@ class BinTree {
    *
    * @param node O nó atual da árvore que está sendo percorrido.
    */
-  void preOrdem(Node* node);
+  void preOrder(Node* node);
 
   /**
    * @brief Realiza um percurso recursivo em ordem na árvore e imprime os valores.
@@ -107,7 +132,7 @@ class BinTree {
    *
    * @param node O nó atual da árvore que está sendo percorrido.
    */
-  void emOrdem(Node* node);
+  void inOrder(Node* node);
 
   /**
    * @brief Realiza um percurso recursivo em ordem na árvore e imprime os valores.
@@ -117,13 +142,26 @@ class BinTree {
    *
    * @param node O nó atual da árvore que está sendo percorrido.
    */
-  void posOrdem(Node* node);
+  void postOrder(Node* node);
+
+  /**
+   * @brief Verifica se um valor específico está presente na árvore.
+   *
+   * @param node Nó atual que está sendo verificado para busca.
+   * @param valor Valor que está sendo buscado.
+   */
+  bool search(Node* node, Type valor) const;
+
+  // TODO: remoção(remove)
+  // TODO: altura da árvore(height)
+  // TODO:contagem de nós (countNodes)
+  // TODO: verificação de balanceamento (isBalanced)
 };
 
 template <typename Type>
 void BinTree<Type>::auxCopia(BinTree<Type>& arvore, const typename BinTree<Type>::Node* node) {
   if (node != nullptr) {
-    arvore.inserir(node->valor);
+    arvore.insert(node->valor);
     auxCopia(arvore, node->left);
     auxCopia(arvore, node->right);
   }
@@ -132,7 +170,7 @@ void BinTree<Type>::auxCopia(BinTree<Type>& arvore, const typename BinTree<Type>
 template <typename Type>
 BinTree<Type>::BinTree(const BinTree<Type>& outraArvore) : BinTree() {
   if (outraArvore.raiz != nullptr) {
-    inserir(outraArvore.raiz->valor);
+    insert(outraArvore.raiz->valor);
 
     // Copia recursivamente os demais nós (subárvores esquerda e direita)
     auxCopia(*this, outraArvore.raiz->left);
@@ -141,69 +179,102 @@ BinTree<Type>::BinTree(const BinTree<Type>& outraArvore) : BinTree() {
 }
 
 template <typename Type>
-void BinTree<Type>::inserir(Type valor) {
-  raiz = inserir(raiz, valor);
+void BinTree<Type>::auxDestrutor(typename BinTree<Type>::Node* node) {
+  if (node != nullptr) {
+    auxDestrutor(node->left);
+    auxDestrutor(node->right);
+  }
+
+  delete node;
 }
 
 template <typename Type>
-typename BinTree<Type>::Node* BinTree<Type>::inserir(typename BinTree<Type>::Node* node,
-                                                     Type valor) {
+BinTree<Type>::~BinTree() {
+  auxDestrutor(raiz);
+}
+
+template <typename Type>
+void BinTree<Type>::insert(Type valor) {
+  raiz = insert(raiz, valor);
+}
+
+template <typename Type>
+typename BinTree<Type>::Node* BinTree<Type>::insert(typename BinTree<Type>::Node* node,
+                                                    Type valor) {
   if (node == nullptr) {
     return new Node(valor);
   }
 
   if (valor < node->valor) {
-    node->left = inserir(node->left, valor);
+    node->left = insert(node->left, valor);
   } else {
-    node->right = inserir(node->right, valor);
+    node->right = insert(node->right, valor);
   }
 
   return node;
 }
 
 template <typename Type>
-void BinTree<Type>::preOrdem() {
-  preOrdem(raiz);
+void BinTree<Type>::preOrder() {
+  preOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::preOrdem(typename BinTree<Type>::Node* node) {
+void BinTree<Type>::preOrder(typename BinTree<Type>::Node* node) {
   if (node == nullptr) return;
 
   std::cout << node->valor << " ";
-  preOrdem(node->left);
-  preOrdem(node->right);
+  preOrder(node->left);
+  preOrder(node->right);
 }
 
 template <typename Type>
-void BinTree<Type>::emOrdem() {
-  emOrdem(raiz);
+void BinTree<Type>::inOrder() {
+  inOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::emOrdem(typename BinTree<Type>::Node* node) {
+void BinTree<Type>::inOrder(typename BinTree<Type>::Node* node) {
   if (node == nullptr) return;
 
-  emOrdem(node->left);
+  inOrder(node->left);
   std::cout << node->valor << " ";
-  emOrdem(node->right);
+  inOrder(node->right);
 }
 
 template <typename Type>
-void BinTree<Type>::posOrdem() {
-  posOrdem(raiz);
+void BinTree<Type>::postOrder() {
+  postOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::posOrdem(typename BinTree<Type>::Node* node) {
+void BinTree<Type>::postOrder(typename BinTree<Type>::Node* node) {
   if (node == nullptr) return;
 
-  posOrdem(node->left);
-  posOrdem(node->right);
+  postOrder(node->left);
+  postOrder(node->right);
   std::cout << node->valor << " ";
+}
+
+template <typename Type>
+bool BinTree<Type>::search(Type valor) const {
+  return search(raiz, valor);
+}
+
+template <typename Type>
+bool BinTree<Type>::search(typename BinTree<Type>::Node* node, Type valor) const {
+  if (node == nullptr) return false;
+
+  if (node->valor == valor) return true;
+
+  if (valor < node->valor) {
+    return search(node->left, valor);
+  } else {
+    return search(node->right, valor);
+  }
 }
 
 #endif
