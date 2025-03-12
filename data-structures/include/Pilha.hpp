@@ -83,27 +83,27 @@ class Pilha {
 };
 
 template <typename Type>
-Pilha<Type>::Pilha(const Pilha<Type>& outraPilha) : topo(nullptr), tamanho(0) {
+Pilha<Type>::Pilha(const Pilha<Type>& outraPilha) : Pilha() {
   if (!outraPilha.isEmpty()) {
     // Pegar o ponteiro para o primeiro nó da pilha original
-    Node<Type>* atualOrig = outraPilha.topo.get();
+    Node* atualOrig = outraPilha.topo;
 
     // Criar o primeiro nó da nova pilha
-    topo = std::make_unique<Node<Type>>(atualOrig->getDado());
-    Node<Type>* atualCopia = topo.get();
+    topo = new Node(atualOrig->valor);
+    Node* atualCopia = topo;
     ++tamanho;
 
     // Copiar o restante dos nós
-    while (atualOrig->getProximo() != nullptr) {
-      atualOrig = atualOrig->getProximo().get();
+    while (atualOrig->proximo != nullptr) {
+      atualOrig = atualOrig->proximo;
       // Cria o novo nó com o dado do nó atual da pilha original
-      std::unique_ptr<Node<Type>> temp = std::make_unique<Node<Type>>(atualOrig->getDado());
+      Node* temp = new Node(atualOrig->dado);
 
       // Conecta o novo nó ao final da cópia
-      atualCopia->setProximo(temp);
+      atualCopia->proximo = temp;
 
       // Atualiza o ponteiro para o último nó copiado
-      atualCopia = atualCopia->getProximo().get();
+      atualCopia = atualCopia->proximo;
       ++tamanho;
     }
   }
@@ -124,20 +124,29 @@ void Pilha<Type>::pop() {
   if (isEmpty()) {
     throw std::out_of_range("A pilha está vazia");
   }
-  topo = std::move(topo->getProximo());
+
+  // Cria um nó temporário apontando para o topo
+  Node* temp = topo;
+
+  // Atualiza o topo para o próximo nó
+  topo = topo->proximo;
+
+  // Desaloca o nó temporário
+  delete temp;
+
   --tamanho;
 }
 
 template <typename Type>
 void Pilha<Type>::push(Type dado) {
   // Cria um novo nó
-  std::unique_ptr<Node<Type>> temp = std::make_unique<Node<Type>>(dado);
+  Node* novo = new Node(dado);
 
   // O topo se torna o próximo do novo nó
-  temp->setProximo(topo);
+  novo->proximo = topo;
 
   // O novo nó se torna o topo
-  topo = std::move(temp);
+  topo = novo;
   ++tamanho;
 }
 
@@ -147,7 +156,7 @@ Type Pilha<Type>::top() {
     throw std::out_of_range("A pilha está vazia");
   }
 
-  return topo->getDado();
+  return topo->valor;
 }
 
 template <typename Type>
@@ -169,10 +178,10 @@ void Pilha<Type>::print() {
     return;
   }
 
-  Node<Type>* temp = topo.get();
+  Node* temp = topo;
   while (temp != nullptr) {
-    std::cout << temp->getDado() << " ";
-    temp = temp->getProximo().get();
+    std::cout << temp->valor << " ";
+    temp = temp->proximo;
   }
   std::cout << std::endl;
 }
