@@ -1,9 +1,9 @@
 #include <iostream>
 #include <memory>
 
-// #include "Fila.hpp"
-#include "Lista.hpp"
-// #include "Pilha.hpp"
+// #include "data-structures/Fila.hpp"
+#include "data-structures/Lista.hpp"
+// #include "data-structures/Pilha.hpp"
 
 void testarLista() {
   Lista<int> lista;
