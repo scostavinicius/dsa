@@ -82,6 +82,10 @@ class BinTree {
    */
   bool search(Type valor) const;
 
+  // size_t height() const;
+
+  size_t countNodes() const;
+
  private:
   /**
    * @brief Função auxiliar utilizada pelo Construtor cópia.
@@ -152,20 +156,15 @@ class BinTree {
    */
   bool search(Node* node, Type valor) const;
 
+  // size_t height(Node* node) const;
+
+  size_t countNodes(Node* node) const;
+
   // TODO: remoção(remove)
   // TODO: altura da árvore(height)
   // TODO:contagem de nós (countNodes)
   // TODO: verificação de balanceamento (isBalanced)
 };
-
-template <typename Type>
-void BinTree<Type>::auxCopia(BinTree<Type>& arvore, const typename BinTree<Type>::Node* node) {
-  if (node != nullptr) {
-    arvore.insert(node->valor);
-    auxCopia(arvore, node->left);
-    auxCopia(arvore, node->right);
-  }
-}
 
 template <typename Type>
 BinTree<Type>::BinTree(const BinTree<Type>& outraArvore) : BinTree() {
@@ -179,6 +178,20 @@ BinTree<Type>::BinTree(const BinTree<Type>& outraArvore) : BinTree() {
 }
 
 template <typename Type>
+void BinTree<Type>::auxCopia(BinTree<Type>& arvore, const typename BinTree<Type>::Node* node) {
+  if (node != nullptr) {
+    arvore.insert(node->valor);
+    auxCopia(arvore, node->left);
+    auxCopia(arvore, node->right);
+  }
+}
+
+template <typename Type>
+BinTree<Type>::~BinTree() {
+  auxDestrutor(raiz);
+}
+
+template <typename Type>
 void BinTree<Type>::auxDestrutor(typename BinTree<Type>::Node* node) {
   if (node != nullptr) {
     auxDestrutor(node->left);
@@ -186,11 +199,6 @@ void BinTree<Type>::auxDestrutor(typename BinTree<Type>::Node* node) {
   }
 
   delete node;
-}
-
-template <typename Type>
-BinTree<Type>::~BinTree() {
-  auxDestrutor(raiz);
 }
 
 template <typename Type>
@@ -275,6 +283,18 @@ bool BinTree<Type>::search(typename BinTree<Type>::Node* node, Type valor) const
   } else {
     return search(node->right, valor);
   }
+}
+
+template <typename Type>
+size_t BinTree<Type>::countNodes() const {
+  return countNodes(raiz);
+}
+
+template <typename Type>
+size_t BinTree<Type>::countNodes(typename BinTree<Type>::Node* node) const {
+  if (node == nullptr) return 0;
+
+  return 1 + countNodes(node->left) + countNodes(node->right);
 }
 
 #endif
