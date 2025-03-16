@@ -1,6 +1,7 @@
 #ifndef BINTREE_HPP
 #define BINTREE_HPP
 
+#include <algorithm>
 #include <iostream>
 
 /**
@@ -33,9 +34,6 @@ class BinTree {
    * atual, ele é adicionado à subárvore esquerda. Caso contrário, ele é adicionado à subárvore
    * direita.
    *
-   * Esse método chama o método recursivo `insert(Node* node, Type valor)` para realizar a
-   * inserção no nó apropriado.
-   *
    * @param valor O valor a ser inserido na árvore.
    */
   void insert(Type valor);
@@ -45,46 +43,49 @@ class BinTree {
    *
    * O método percorre a árvore no sentido raiz -> esquerda -> direita e imprime os valores
    * encontrados.
-   *
-   * Esse método chama o método recursivo `preOrder(Node* node)` para realizar o percurso.
    */
-  void preOrder();
+  void preOrder() const;
 
   /**
    * @brief Percorre a árvore em ordem (in-order) e imprime os valores.
    *
    * O método percorre a árvore no sentido esquerda -> raiz -> direita e imprime os valores
    * encontrados.
-   *
-   * Esse método chama o método recursivo `inOrder(Node* node)` para realizar o percurso.
    */
-  void inOrder();
+  void inOrder() const;
 
   /**
    * @brief Percorre a árvore em pós-ordem (post-order) e imprime os valores.
    *
    * O método percorre a árvore no sentido esquerda -> direita -> raiz e imprime os valores
    * encontrados.
-   *
-   * Esse método chama o método recursivo `postOrder(Node* node)` para realizar o percurso.
    */
-  void postOrder();
+  void postOrder() const;
 
   /**
    * @brief Verifica se um valor específico está presente na árvore.
    *
    * O método utiliza a lógica de implementação da árvore binária de busca para procurar pelo valor.
    *
-   * Esse método chama o método recursivo `search(Node* node, Type valor)` para realizar a
-   * busca.
-   *
    * @param valor O valor a ser buscado na árvore
    */
   bool search(Type valor) const;
 
-  // size_t height() const;
+  /**
+   * @brief Retorna a altura da árvore
+   *
+   * @return size_t
+   */
+  size_t height() const;
 
+  /**
+   * @brief Retorna a quantidade de nós da árvore
+   *
+   * @return size_t
+   */
   size_t countNodes() const;
+
+  bool isBalanced() const;
 
  private:
   /**
@@ -121,49 +122,69 @@ class BinTree {
   /**
    * @brief Realiza um percurso recursivo pré-ordem na árvore e imprime os valores.
    *
-   * Esse método percorre a árvore recursivamente, visitando o nó raiz, a subárvore esquerda,
-   * e a subárvore direita, imprimindo os valores no caminho.
+   * Esse método visita o nó raiz, a subárvore esquerda, e a subárvore direita, imprimindo os
+   * valores no caminho.
    *
    * @param node O nó atual da árvore que está sendo percorrido.
    */
-  void preOrder(Node* node);
+  void preOrder(Node* node) const;
 
   /**
    * @brief Realiza um percurso recursivo em ordem na árvore e imprime os valores.
    *
-   * Esse método percorre a árvore recursivamente, visitando a subárvore esquerda, o nó raiz
-   * e a subárvore direita, imprimindo os valores no caminho.
+   * Esse método visita a subárvore esquerda, o nó raiz e a subárvore direita, imprimindo os valores
+   * no caminho.
    *
    * @param node O nó atual da árvore que está sendo percorrido.
    */
-  void inOrder(Node* node);
+  void inOrder(Node* node) const;
 
   /**
    * @brief Realiza um percurso recursivo em ordem na árvore e imprime os valores.
    *
-   * Esse método percorre a árvore recursivamente, visitando a subárvore esquerda, a subárvore
-   * direita e o nó raiz, imprimindo os valores no caminho.
+   * Esse método visita a subárvore esquerda, a subárvore direita e o nó raiz, imprimindo os valores
+   * no caminho.
    *
    * @param node O nó atual da árvore que está sendo percorrido.
    */
-  void postOrder(Node* node);
+  void postOrder(Node* node) const;
 
   /**
    * @brief Verifica se um valor específico está presente na árvore.
+   *
+   * Esse método utiliza a lógica de implementação da árvore binária de busca para uma performance
+   * mais eficiente.
    *
    * @param node Nó atual que está sendo verificado para busca.
    * @param valor Valor que está sendo buscado.
    */
   bool search(Node* node, Type valor) const;
 
-  // size_t height(Node* node) const;
+  // TODO: remoção(remove)
 
+  /**
+   * @brief Retorna a altura da árvore
+   *
+   * Esse método retorna 1 + a maior altura entre as subárvores à esquerda e à direita.
+   *
+   * @param node
+   * @return size_t
+   */
+  size_t height(Node* node) const;
+
+  /**
+   * @brief Retorna a quantidade de nós da árvore
+   *
+   * Esse método retorna 1 + a contagem de nós das subárvores à esquerda e à direita.
+   *
+   * @param node Nó atual que está sendo contado
+   * @return size_t
+   */
   size_t countNodes(Node* node) const;
 
-  // TODO: remoção(remove)
-  // TODO: altura da árvore(height)
-  // TODO:contagem de nós (countNodes)
   // TODO: verificação de balanceamento (isBalanced)
+
+  bool isBalanced(Node* node) const;
 };
 
 template <typename Type>
@@ -223,13 +244,13 @@ typename BinTree<Type>::Node* BinTree<Type>::insert(typename BinTree<Type>::Node
 }
 
 template <typename Type>
-void BinTree<Type>::preOrder() {
+void BinTree<Type>::preOrder() const {
   preOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::preOrder(typename BinTree<Type>::Node* node) {
+void BinTree<Type>::preOrder(typename BinTree<Type>::Node* node) const {
   if (node == nullptr) return;
 
   std::cout << node->valor << " ";
@@ -238,13 +259,13 @@ void BinTree<Type>::preOrder(typename BinTree<Type>::Node* node) {
 }
 
 template <typename Type>
-void BinTree<Type>::inOrder() {
+void BinTree<Type>::inOrder() const {
   inOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::inOrder(typename BinTree<Type>::Node* node) {
+void BinTree<Type>::inOrder(typename BinTree<Type>::Node* node) const {
   if (node == nullptr) return;
 
   inOrder(node->left);
@@ -253,13 +274,13 @@ void BinTree<Type>::inOrder(typename BinTree<Type>::Node* node) {
 }
 
 template <typename Type>
-void BinTree<Type>::postOrder() {
+void BinTree<Type>::postOrder() const {
   postOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::postOrder(typename BinTree<Type>::Node* node) {
+void BinTree<Type>::postOrder(typename BinTree<Type>::Node* node) const {
   if (node == nullptr) return;
 
   postOrder(node->left);
@@ -286,6 +307,18 @@ bool BinTree<Type>::search(typename BinTree<Type>::Node* node, Type valor) const
 }
 
 template <typename Type>
+size_t BinTree<Type>::height() const {
+  return height(raiz);
+}
+
+template <typename Type>
+size_t BinTree<Type>::height(typename BinTree<Type>::Node* node) const {
+  if (node == nullptr) return 0;
+
+  return 1 + std::max(height(node->left), height(node->right));
+}
+
+template <typename Type>
 size_t BinTree<Type>::countNodes() const {
   return countNodes(raiz);
 }
@@ -295,6 +328,18 @@ size_t BinTree<Type>::countNodes(typename BinTree<Type>::Node* node) const {
   if (node == nullptr) return 0;
 
   return 1 + countNodes(node->left) + countNodes(node->right);
+}
+
+template <typename Type>
+bool BinTree<Type>::isBalanced() const {
+  return isBalanced(raiz);
+}
+
+template <typename Type>
+bool BinTree<Type>::isBalanced(typename BinTree<Type>::Node* node) const {
+  if (std::abs(height(node->left) - height(node->right)) > 1) return false;
+
+  return isBalanced(node->left) && isBalanced(node->right);
 }
 
 #endif
