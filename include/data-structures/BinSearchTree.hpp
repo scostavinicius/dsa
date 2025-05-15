@@ -10,7 +10,7 @@
  * @tparam Type
  */
 template <typename Type>
-class BinTree {
+class BinSearchTree {
  private:
   struct Node {
     Type valor;
@@ -23,9 +23,9 @@ class BinTree {
   Node* raiz;
 
  public:
-  BinTree() : raiz(nullptr) {}
-  BinTree(const BinTree<Type>& outraArvore);
-  ~BinTree();
+  BinSearchTree() : raiz(nullptr) {}
+  BinSearchTree(const BinSearchTree<Type>& outraArvore);
+  ~BinSearchTree();
 
   /**
    * @brief Insere um valor na árvore binária de busca.
@@ -85,6 +85,9 @@ class BinTree {
    */
   size_t countNodes() const;
 
+  /**
+   * @brief Retorna se a árvore está ou não balanceada
+   */
   bool isBalanced() const;
 
  private:
@@ -96,7 +99,7 @@ class BinTree {
    * @param arvore Árvore destino da cópia
    * @param node Nó atual da árvore que está sendo copiada
    */
-  void auxCopia(BinTree<Type>& arvore, const Node* node);
+  void auxCopia(BinSearchTree<Type>& arvore, const Node* node);
 
   /**
    * @brief Função auxiliar utilizada pelo Destrutor.
@@ -182,13 +185,16 @@ class BinTree {
    */
   size_t countNodes(Node* node) const;
 
-  // TODO: verificação de balanceamento (isBalanced)
-
+  /**
+   * @brief Retorna se a árvore está ou não balanceada
+   *
+   * @param node Nó atual
+   */
   bool isBalanced(Node* node) const;
 };
 
 template <typename Type>
-BinTree<Type>::BinTree(const BinTree<Type>& outraArvore) : BinTree() {
+BinSearchTree<Type>::BinSearchTree(const BinSearchTree<Type>& outraArvore) : BinSearchTree() {
   if (outraArvore.raiz != nullptr) {
     insert(outraArvore.raiz->valor);
 
@@ -199,7 +205,8 @@ BinTree<Type>::BinTree(const BinTree<Type>& outraArvore) : BinTree() {
 }
 
 template <typename Type>
-void BinTree<Type>::auxCopia(BinTree<Type>& arvore, const typename BinTree<Type>::Node* node) {
+void BinSearchTree<Type>::auxCopia(BinSearchTree<Type>& arvore,
+                                   const typename BinSearchTree<Type>::Node* node) {
   if (node != nullptr) {
     arvore.insert(node->valor);
     auxCopia(arvore, node->left);
@@ -208,12 +215,12 @@ void BinTree<Type>::auxCopia(BinTree<Type>& arvore, const typename BinTree<Type>
 }
 
 template <typename Type>
-BinTree<Type>::~BinTree() {
+BinSearchTree<Type>::~BinSearchTree() {
   auxDestrutor(raiz);
 }
 
 template <typename Type>
-void BinTree<Type>::auxDestrutor(typename BinTree<Type>::Node* node) {
+void BinSearchTree<Type>::auxDestrutor(typename BinSearchTree<Type>::Node* node) {
   if (node != nullptr) {
     auxDestrutor(node->left);
     auxDestrutor(node->right);
@@ -223,13 +230,13 @@ void BinTree<Type>::auxDestrutor(typename BinTree<Type>::Node* node) {
 }
 
 template <typename Type>
-void BinTree<Type>::insert(Type valor) {
+void BinSearchTree<Type>::insert(Type valor) {
   raiz = insert(raiz, valor);
 }
 
 template <typename Type>
-typename BinTree<Type>::Node* BinTree<Type>::insert(typename BinTree<Type>::Node* node,
-                                                    Type valor) {
+typename BinSearchTree<Type>::Node* BinSearchTree<Type>::insert(
+    typename BinSearchTree<Type>::Node* node, Type valor) {
   if (node == nullptr) {
     return new Node(valor);
   }
@@ -244,13 +251,13 @@ typename BinTree<Type>::Node* BinTree<Type>::insert(typename BinTree<Type>::Node
 }
 
 template <typename Type>
-void BinTree<Type>::preOrder() const {
+void BinSearchTree<Type>::preOrder() const {
   preOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::preOrder(typename BinTree<Type>::Node* node) const {
+void BinSearchTree<Type>::preOrder(typename BinSearchTree<Type>::Node* node) const {
   if (node == nullptr) return;
 
   std::cout << node->valor << " ";
@@ -259,13 +266,13 @@ void BinTree<Type>::preOrder(typename BinTree<Type>::Node* node) const {
 }
 
 template <typename Type>
-void BinTree<Type>::inOrder() const {
+void BinSearchTree<Type>::inOrder() const {
   inOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::inOrder(typename BinTree<Type>::Node* node) const {
+void BinSearchTree<Type>::inOrder(typename BinSearchTree<Type>::Node* node) const {
   if (node == nullptr) return;
 
   inOrder(node->left);
@@ -274,13 +281,13 @@ void BinTree<Type>::inOrder(typename BinTree<Type>::Node* node) const {
 }
 
 template <typename Type>
-void BinTree<Type>::postOrder() const {
+void BinSearchTree<Type>::postOrder() const {
   postOrder(raiz);
   std::cout << std::endl;
 }
 
 template <typename Type>
-void BinTree<Type>::postOrder(typename BinTree<Type>::Node* node) const {
+void BinSearchTree<Type>::postOrder(typename BinSearchTree<Type>::Node* node) const {
   if (node == nullptr) return;
 
   postOrder(node->left);
@@ -289,12 +296,12 @@ void BinTree<Type>::postOrder(typename BinTree<Type>::Node* node) const {
 }
 
 template <typename Type>
-bool BinTree<Type>::search(Type valor) const {
+bool BinSearchTree<Type>::search(Type valor) const {
   return search(raiz, valor);
 }
 
 template <typename Type>
-bool BinTree<Type>::search(typename BinTree<Type>::Node* node, Type valor) const {
+bool BinSearchTree<Type>::search(typename BinSearchTree<Type>::Node* node, Type valor) const {
   if (node == nullptr) return false;
 
   if (node->valor == valor) return true;
@@ -307,36 +314,36 @@ bool BinTree<Type>::search(typename BinTree<Type>::Node* node, Type valor) const
 }
 
 template <typename Type>
-size_t BinTree<Type>::height() const {
+size_t BinSearchTree<Type>::height() const {
   return height(raiz);
 }
 
 template <typename Type>
-size_t BinTree<Type>::height(typename BinTree<Type>::Node* node) const {
+size_t BinSearchTree<Type>::height(typename BinSearchTree<Type>::Node* node) const {
   if (node == nullptr) return 0;
 
   return 1 + std::max(height(node->left), height(node->right));
 }
 
 template <typename Type>
-size_t BinTree<Type>::countNodes() const {
+size_t BinSearchTree<Type>::countNodes() const {
   return countNodes(raiz);
 }
 
 template <typename Type>
-size_t BinTree<Type>::countNodes(typename BinTree<Type>::Node* node) const {
+size_t BinSearchTree<Type>::countNodes(typename BinSearchTree<Type>::Node* node) const {
   if (node == nullptr) return 0;
 
   return 1 + countNodes(node->left) + countNodes(node->right);
 }
 
 template <typename Type>
-bool BinTree<Type>::isBalanced() const {
+bool BinSearchTree<Type>::isBalanced() const {
   return isBalanced(raiz);
 }
 
 template <typename Type>
-bool BinTree<Type>::isBalanced(typename BinTree<Type>::Node* node) const {
+bool BinSearchTree<Type>::isBalanced(typename BinSearchTree<Type>::Node* node) const {
   if (std::abs(height(node->left) - height(node->right)) > 1) return false;
 
   return isBalanced(node->left) && isBalanced(node->right);

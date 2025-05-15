@@ -29,7 +29,7 @@ class Lista {
    * @brief Ponteiro para o primeiro nó da lista
    *
    */
-  Node<Type>* primeiro;
+  Node* primeiro;
 
   /**
    * @brief Ponteiro para o último nó da lista
@@ -81,12 +81,12 @@ class Lista {
   /**
    * @brief Adiciona um novo elemento em uma dada posição da lista
    *
-   * @param posicao Índice da lista onde será adicionado um novo elemento
    * @param dado Novo dado que será adicionado na lista
+   * @param posicao Índice da lista onde será adicionado um novo elemento
    *
    * @throw `std::out_of_range` se a posição for maior que o tamanho da lista
    */
-  void insert(size_t posicao, Type dado);
+  void insert(Type dado, size_t posicao);
 
   /**
    * @brief Remove um elemento em uma dada posição da lista
@@ -225,7 +225,7 @@ void Lista<Type>::push_back(Type dado) {
 }
 
 template <typename Type>
-void Lista<Type>::insert(size_t posicao, Type dado) {
+void Lista<Type>::insert(Type dado, size_t posicao) {
   if (posicao < 0 || posicao > tamanho) {
     throw std::out_of_range("Posicao invalida (maior que o tamanho da lista)");
   }
